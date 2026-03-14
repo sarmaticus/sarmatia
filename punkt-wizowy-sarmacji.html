@@ -1,17 +1,13 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head><script type='text/javascript' src='https://s134.cyber-folks.pl:2223/ZFEOQCdmPzD7E4OX0PJ-IMEkEpImP9Iu3lST4vDVZ5Fl7Ll0dcYCv-tRzAyHbHmtaGWj6naUwzuHCr0_7-nqwIO2jMHdaiexNHrKeqLv56Rx-u5YPWbeR6KD8M0G6eAo48btX-LHW_3XkbzZqSCfnALQhSSEd3gI_2zkNXvbuzGgK-mFM8fJHHM4hVi48CPaMNUKFc0zH1E_R3ujJSFDtIJK7wSxqfNlI44e-WZe4KsxRjkrNuIgc6JygoqC4zJ7o2ky9mfPNABYBgBvBYNnF4KTLjrAH6U2gG-bTL5nF8YrDuhD0N6kQRMGxb6fPRAsjnpKjOYQ4Vy-ATKEM37N78f_1KnJuDapJ7mCmwD93RAtbSzhTZukt7hFHLhBvo8Exx_EEQvc2YfXPfyZ_vdtGqKWaPT_xwWRdOTkEQWNGcNUKd7oPlDWTSHg2zfiYQjP9zhhXBz73gzmf3qwuZKGWYbvzM23aDJ39Ul-hFFyUWCH59FTI-AKb7EqTmOooVWVDLAD3Ir02mwmITQW_cVtBCVRdaKvrzuI-NfHg4tvCa_FevftKd1v4fs_5m8GvDeszX06EvsVohMZVtu5GYCGIKS1I8MA8izWt91XMA'></script>
-    <meta charset="UTF-8">
+<head><meta charset="UTF-8">
     <title>Onboarding na Hive – Anno Domini 1590</title>
-    
-    <!-- Google Fonts – możesz wybrać inną kombinację -->
+        <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.google.com/share?selection.family=Poltawski+Nowy:ital,wght@0,400..700;1,400..700 rel="stylesheet">
-    <link rel="stylesheet" href="styl.css">
-    <script src="https://unpkg.com/@hiveio/dhive@1.2.1/dist/dhive.js"></script>
-    
-    
+    <link rel="stylesheet" href="backend/styl.css">
+    <script src="https://unpkg.com/@hiveio/dhive@1.2.1/dist/dhive.js"></script>    
 </head>
 <body>
 
@@ -24,7 +20,7 @@
 
 <div class="parchment">
 
-    <h1>Przekrocz granice Rzeczpospolitej Sarmackiej</h1>
+    <h1>Przekrocz granice Rzeczypospolitej Sarmackiej</h1>
     
     <p style="text-align:center; font-size:1.5rem; margin-bottom:1em;">
        Oby dołączyć do naszej społeczności musisz dołączyć do sieci Hive, w tym celu wypełnij poniższy formularz.
@@ -64,7 +60,7 @@
   'https://api.openhive.network',         // mainnet – tylko do testów dostępności nazwy!
   'https://anyx.io'                       // kolejny stabilny
 ]); // Zmień na testnet jeśli testujesz
-        const backendUrl = 'http://empis.linuxpl.info/hive/sarmatia/create-account'; // Zastąp URL Twojego backendu (np. Vercel)
+        const backendUrl = 'backend/create-account'; // Zastąp URL Twojego backendu (np. Vercel)
 // Jedno stałe pytanie + 3 opcje (możesz mieć kilka i losować)
 const quizQuestions = [
     {
