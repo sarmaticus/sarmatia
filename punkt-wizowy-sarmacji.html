@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><script type='text/javascript' src='https://s134.cyber-folks.pl:2223/ZFEOQCdmPzD7E4OX0PJ-IMEkEpImP9Iu3lST4vDVZ5Fl7Ll0dcYCv-tRzAyHbHmtaGWj6naUwzuHCr0_7-nqwIO2jMHdaiexNHrKeqLv56Rx-u5YPWbeR6KD8M0G6eAo48btX-LHW_3XkbzZqSCfnALQhSSEd3gI_2zkNXvbuzGgK-mFM8fJHHM4hVi48CPaMNUKFc0zH1E_R3ujJSFDtIJK7wSxqfNlI44e-WZe4KsxRjkrNuIgc6JygoqC4zJ7o2ky9mfPNABYBgBvBYNnF4KTLjrAH6U2gG-bTL5nF8YrDuhD0N6kQRMGxb6fPRAsjnpKjOYQ4Vy-ATKEM37N78f_1KnJuDapJ7mCmwD93RAtbSzhTZukt7hFHLhBvo8Exx_EEQvc2YfXPfyZ_vdtGqKWaPT_xwWRdOTkEQWNGcNUKd7oPlDWTSHg2zfiYQjP9zhhXBz73gzmf3qwuZKGWYbvzM23aDJ39Ul-hFFyUWCH59FTI-AKb7EqTmOooVWVDLAD3Ir02mwmITQW_cVtBCVRdaKvrzuI-NfHg4tvCa_FevftKd1v4fs_5m8GvDeszX06EvsVohMZVtu5GYCGIKS1I8MA8izWt91XMA'></script>
+    <meta charset="UTF-8">
+    <title>Onboarding na Hive – Anno Domini 1590</title>
+    
+    <!-- Google Fonts – możesz wybrać inną kombinację -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.google.com/share?selection.family=Poltawski+Nowy:ital,wght@0,400..700;1,400..700 rel="stylesheet">
+    <link rel="stylesheet" href="styl.css">
+    <script src="https://unpkg.com/@hiveio/dhive@1.2.1/dist/dhive.js"></script>
+    
+    
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+    <filter id="old-parchment-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+</svg>
+
+<div class="parchment">
+
+    <h1>Przekrocz granice Rzeczpospolitej Sarmackiej</h1>
+    
+    <p style="text-align:center; font-size:1.5rem; margin-bottom:1em;">
+       Oby dołączyć do naszej społeczności musisz dołączyć do sieci Hive, w tym celu wypełnij poniższy formularz.
+    </p>
+
+    <p>Wpisz miano, pod którym chcesz aby Cię znano:</p>
+    <input type="text" id="username" oninput="checkAvailability()" placeholder="Imię (co najmniej 3 litery)">
+
+    <p id="availability"></p>
+
+    <p>Wpisz tajemne hasło (silne i godne pieczęci!):</p>
+    <input type="password" id="password" placeholder="Hasło do stworzenia kluczy">
+<p>
+    Hasło musi mieć min. 12 znaków, w tym dużą i małą literę oraz cyfrę.
+</p>
+
+<p style="margin-top: 1em; font-weight: bold;">Odpowiedz na jedno pytanie, abyśmy stwierdzili czy aby nie jesteś warchołem, golemem albo innym cudakiem:</p>
+<p id="quiz-question">Ładuję pytanie...</p>
+
+<div id="quiz-options" style="margin: 1em 0;">
+    <!-- opcje pojawią się dynamicznie -->
+</div>
+<p id="quiz-error" style="color: #8b0000; font-weight: bold; min-height: 1.4em;"></p>
+    <p><strong>Niechaj klucze te spisane zostaną na pergaminie i strzeżone pilnie – albowiem bez nich zgubisz dostęp na wieki!</strong></p>
+    <button onclick="createAccount()" disabled id="create-btn">Potwierdź i przyjmij godność</button>
+
+    <div id="keys"></div>
+    <p id="result"></p>
+    <p id="error"></p>
+
+</div>
+
+    <script>
+        const client = new dhive.Client([
+  'https://api.syncad.com',
+  'https://rpc.mahdiyari.info',
+  'https://api.openhive.network',         // mainnet – tylko do testów dostępności nazwy!
+  'https://anyx.io'                       // kolejny stabilny
+]); // Zmień na testnet jeśli testujesz
+        const backendUrl = 'http://empis.linuxpl.info/hive/sarmatia/create-account'; // Zastąp URL Twojego backendu (np. Vercel)
+// Jedno stałe pytanie + 3 opcje (możesz mieć kilka i losować)
+const quizQuestions = [
+    {
+        question: "Czy Veto było czymś dobrym?",
+        options: ["No jasne!", "Abominacja!", "Jeden Rabin powie tak, drugi Rabin powie nie"],
+        correct: 2   // indeks poprawnej odpowiedzi (liczone od 0)
+    },
+    {
+        question: "Jak nazywamy naszą krainę inaczej niż Rzeczpospolita?",
+        options: ["Wielka Polska Salaficka", "Sarmacja", "Imperium Lechitów"],
+        correct: 1
+    },
+    {
+        question: "Jaki orzeł znajduje się w godle służb informatycznych - sarmatia.app?",
+        options: ["Jagielloński", "Masoński", "Piastowski"],
+        correct: 0
+    },    
+    {
+        question: "Jaki symbol widnieje w prawym górnym rogu pergaminu?",
+        options: ["†", "✠", "⚔"],
+        correct: 1
+    },
+        {
+        question: "Jakim kolorem określano złote monety florena, dukata w IRP?",
+        options: ["czerwony", "zielony", "niebieski"],
+        correct: 0
+    },
+       {
+        question: "Jaki znak nasz?",
+        options: ["Lew Waleczny", "Orzeł Biały", "Smok Ognisty"],
+        correct: 1
+    }
+];
+    // możesz dodać więcej – losujemy jedno przy ładowaniu strony
+let currentQuiz = null;
+
+// Losujemy pytanie po załadowaniu strony
+function initQuiz() {
+    currentQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+    
+    document.getElementById('quiz-question').innerText = currentQuiz.question;
+    
+    const optionsDiv = document.getElementById('quiz-options');
+    optionsDiv.innerHTML = '';
+    
+    currentQuiz.options.forEach((opt, index) => {
+        const label = document.createElement('label');
+        label.style.display = 'block';
+        label.style.margin = '0.6em 0';
+        label.innerHTML = `
+            <input type="radio" name="quiz" value="${index}" style="margin-right: 0.8em;">
+            ${opt}
+        `;
+        optionsDiv.appendChild(label);
+    });
+    
+    // Reset błędu
+    document.getElementById('quiz-error').innerText = '';
+}
+
+// Wywołujemy przy ładowaniu
+window.addEventListener('load', initQuiz);
+
+        async function checkAvailability() {
+            const username = document.getElementById('username').value;
+            const availabilityEl = document.getElementById('availability');
+            const createBtn = document.getElementById('create-btn');
+
+            if (username.length < 3) {
+                availabilityEl.innerText = 'Nazwa musi mieć co najmniej 3 znaki.';
+                createBtn.disabled = true;
+                return;
+            }
+
+            try {
+                const accounts = await client.database.getAccounts([username]);
+                if (accounts.length === 0) {
+                    availabilityEl.innerText = 'Nazwa dostępna!';
+                    createBtn.disabled = false;
+                } else {
+                    availabilityEl.innerText = 'Nazwa zajęta.';
+                    createBtn.disabled = true;
+                }
+            } catch (err) {
+                availabilityEl.innerText = 'Błąd sprawdzania.';
+            }
+        }
+function validatePassword(password) {
+    if (password.length < 12) {
+        return "Hasło musi mieć co najmniej 12 znaków.";
+    }
+    if (!/[A-Z]/.test(password)) {
+        return "Hasło by być silne, zawierać musi nie mniej jak jedną wielką literę.";
+    }
+    if (!/[a-z]/.test(password)) {
+        return "Hasło by być silne, zawierać musi nie mniej jak jedną małą literę.";
+    }
+    if (!/[0-9]/.test(password)) {
+        return "Hasło by być silne, zawierać musi nie mniej jak jedną  cyfrę.";
+    }
+    return ""; // puste = OK
+}
+function validatePassword(password) {
+    if (password.length < 12) {
+        return "Hasło musi mieć co najmniej 12 znaków.";
+    }
+    if (!/[A-Z]/.test(password)) {
+        return "Hasło by być silne, zawierać musi nie mniej jak jedną wielką literę.";
+    }
+    if (!/[a-z]/.test(password)) {
+        return "Hasło by być silne, zawierać musi nie mniej jak jedną małą literę.";
+    }
+    if (!/[0-9]/.test(password)) {
+        return "Hasło by być silne, zawierać musi nie mniej jak jedną cyfrę.";
+    }
+    return ""; // puste = OK
+}
+
+async function createAccount() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // 1. Podstawowa walidacja – czy w ogóle coś wpisano
+    if (!password) {
+        document.getElementById('error').innerText = 'Podaj hasło!';
+        return;
+    }
+
+    // 2. Walidacja siły hasła
+    const passError = validatePassword(password);
+    if (passError) {
+        document.getElementById('error').innerText = passError;
+        return;
+    }
+
+    // 3. Walidacja quizu
+    const selected = document.querySelector('input[name="quiz"]:checked');
+    if (!selected) {
+        document.getElementById('quiz-error').innerText = 'Wybierz odpowiedź!';
+        return;
+    }
+
+    const selectedIndex = parseInt(selected.value);
+    if (selectedIndex !== currentQuiz.correct) {
+        document.getElementById('quiz-error').innerText = 
+            'Źle! Możesz spróbować ponownie, ale nawet moja cierpliwość może się wyczerpać...';
+        // nowe pytanie po 6 sekundach
+        setTimeout(initQuiz, 6000);
+        return;
+    }
+
+    // Jeśli dotarliśmy tutaj → hasło i quiz są poprawne
+    document.getElementById('quiz-error').innerText = '';
+    document.getElementById('error').innerText = '';
+    // ... reszta kodu – generowanie kluczy, auth, fetch ...
+
+            // Generuj klucze lokalnie
+            const roles = ['owner', 'active', 'posting', 'memo'];
+            let keys = {};
+            roles.forEach(role => {
+                const privKey = dhive.PrivateKey.fromLogin(username, password, role);
+                keys[role] = {
+                    private: privKey.toString(),
+                    public: privKey.createPublic().toString()
+                };
+            });
+
+            // Struktury auth
+            const ownerAuth = { weight_threshold: 1, account_auths: [], key_auths: [[keys.owner.public, 1]] };
+            const activeAuth = { weight_threshold: 1, account_auths: [], key_auths: [[keys.active.public, 1]] };
+            const postingAuth = { weight_threshold: 1, account_auths: [], key_auths: [[keys.posting.public, 1]] };
+            const memoKey = keys.memo.public;
+
+            // Wyślij do backendu
+            try {
+                const response = await fetch(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        new_account_name: username,
+                        owner: ownerAuth,
+                        active: activeAuth,
+                        posting: postingAuth,
+                        memo_key: memoKey
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('keys').innerText = `Klucze dla ${username}:\n${JSON.stringify(keys, null, 2)}`;
+                    document.getElementById('result').innerText = 'Konto stworzone!';
+                } else {
+                    document.getElementById('error').innerText = `Błąd: ${data.error}`;
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = `Błąd połączenia: ${err.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
