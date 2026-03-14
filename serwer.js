@@ -29,7 +29,7 @@ const createAccountLimiter = rateLimit({
 
 // ---------------------
 // Zastosuj middleware'y do endpointu
-app.post('/hive/sarmatia/create-account', 
+app.post('backend/create-account', 
   createAccountLimiter, 
   dailyLimiter, 
   cooldownMiddleware, 
@@ -44,7 +44,7 @@ const client = new dhive.Client([
 const creator = process.env.CREATOR_USERNAME // Twój username creator'a, np. 'twojlogin'
 const privateKey = dhive.PrivateKey.fromString(process.env.CREATOR_ACTIVE_KEY); // Prywatny active key (NIE COMMITUJ DO GIT!)
 
-app.post('/hive/sarmatia/create-account', async (req, res) => {
+app.post('/backend/create-account', async (req, res) => {
     const { new_account_name, owner, active, posting, memo_key } = req.body;
 
     try {
